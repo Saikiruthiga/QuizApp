@@ -1,0 +1,14 @@
+body{
+    background-color: lightblue;
+    font-family: sans-serif;
+
+}
+button{
+margin:2%;
+width:15%;
+font-size: 15px;
+}
+.explanation{
+    color:brown;
+   
+}
