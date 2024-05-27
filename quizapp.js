@@ -1,10 +1,9 @@
 document.addEventListener("DOMContentLoaded", updateForm);
 const form = document.getElementById("form");
-const questionInput = document.getElementById("question-input");
 const shuffleBtn = document.getElementById("shuffle");
-const submitBtn = document.getElementById("submit");
-const explanation = document.getElementById("explanation");
+//const submitBtn = document.getElementById("submit");
 const questionArray = [];
+let id = 0;
 
 function updateForm() {
   form.addEventListener("submit", onClickingSubmit);
@@ -13,8 +12,7 @@ function updateForm() {
 
 function onClickingSubmit(event) {
   event.preventDefault();
-  const id = 1;
-  const question = questionInput.value;
+  const question = form.querySelector("[type='text']").value;
   const answerOptions = document.querySelectorAll(
     ".answer-option input[type='text']"
   );
@@ -29,31 +27,48 @@ function onClickingSubmit(event) {
     text: option.value,
     isCorrect: radios[index].checked,
   }));
-  const explanationValue = explanation.value;
+  const explanationValue = form.querySelector("input[id='explanation']").value;
+  id++;
   const item = {
     id: id,
     question: question,
     options: options,
     explanation: explanationValue,
   };
-
   questionArray.push(item);
-  console.log(questionArray);
-  //to clear the form
-  questionInput.value = "";
-  explanation.value = "";
-  answerOptions.forEach((option) => (option.value = ""));
-  radios.forEach((radio) => (radio.checked = false));
-}
+  form.reset();
 
+  displayQuestion(item);
+}
 function onClickingShuffle(event) {
   event.preventDefault();
-  const answersContainer = document.getElementById("answers");
-  const options = Array.from(
-    answersContainer.getElementsByClassName("answer-option")
+  const answerOptions = document.querySelectorAll(".answer-option");
+  const options = Array.from(answerOptions);
+  const valuesOriginal = options.map(
+    (option) => option.querySelector("input").value
   );
-  for (let i = options.length - 1; i > 0; i--) {
-    const j = Math.floor(Math.random() * (i + 1));
-    answersContainer.appendChild(options[j]);
+  const values = valuesOriginal.map((value) => value.toLowerCase);
+  const radios = options.map((option) =>
+    option.querySelector("input[type='radio']:checked")
+  );
+  console.log(radios);
+  if (values.includes("") || radios.every((radio) => radio === null)) {
+    alert("Please fill all the option field and select which one is correct");
+    return;
+  } else {
+    if (new Set(values).size !== values.length) {
+      alert("Please give unique option");
+    } else {
+      for (let i = options.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [options[i], options[j]] = [options[j], options[i]];
+      }
+      const container = document.getElementById("answers");
+      options.forEach((option) => container.appendChild(option));
+    }
   }
+}
+function displayQuestion(item) {
+  const question = document.getElementById("quizquestions question");
+  console.log(questionArray);
 }
