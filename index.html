@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <title>Quiz app</title>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="stylesheet" href="style.css" />
+  </head>
+  <body>
+    <form id="form">
+      <div id="question">
+        <label for="question">Enter your question</label>
+        <input id="question-input" type="text" name="question" />
+      </div>
+      <div id="answers">
+        <div class="answer-option">
+          <label for="option1"></label>
+          <input id="option1" type="text" name="option1" />
+          <label><input type="radio" name="correct" value="0" />Correct</label
+          ><br />
+        </div>
+        <div class="answer-option">
+          <label for="option2"></label>
+          <input id="option2" type="text" name="option2" />
+          <label><input type="radio" name="correct" value="1" />Correct</label
+          ><br />
+        </div>
+        <div class="answer-option">
+          <label for="option3"></label>
+          <input id="option3" type="text" name="option3" />
+          <label><input type="radio" name="correct" value="2" />Correct</label
+          ><br />
+        </div>
+        <div class="answer-option">
+          <label for="option4"></label>
+          <input id="option4" type="text" name="option4" />
+          <label><input type="radio" name="correct" value="3" />Correct</label
+          ><br />
+        </div>
+      </div>
+      <div>
+        <label for="explanation">Explanation</label>
+        <input id="explanation" type="text" name="explanation" />
+      </div>
+      <div id="buttons">
+        <button type="button" id="shuffle">Shuffle</button>
+        <button type="submit" id="submit">Submit</button>
+      </div>
+    </form>
+    <script src="quizapp.js"></script>
+  </body>
+</html>

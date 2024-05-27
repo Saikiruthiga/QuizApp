@@ -1,0 +1,24 @@
+body{
+    background-color: azure;
+}
+form{
+    width:auto;
+    border:1px solid black;
+}
+div{
+    margin:15px;
+}
+#answers{
+    padding:5px;
+}
+.is-correct {
+    background-color: mediumseagreen;
+  }
+  
+.is-incorrect {
+    background-color: indianred;
+  }
+ #explanation,#question-input{
+    height:10%;
+    width: 30%;
+ }
