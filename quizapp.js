@@ -82,7 +82,7 @@ function onClickingShuffle(event) {
   }
 }
 function displayQuestion(item) {
-  const section = document.getElementById("quizquestions");
+  const section = document.getElementById("quiz-questions");
   section.innerHTML = "";
   const question = document.createElement("div");
   section.appendChild(question);
@@ -135,16 +135,19 @@ function checkAnswer(event, question) {
 }
 function searchQuestion(event) {
   const string = event.target.value.toLowerCase();
-  const question = questionArray.filter((item) =>
-    item.question.includes(string)
-  );
-  const section = document.getElementById("quizquestions");
+  console.log(string);
+  const filteredQuestion = questionArray.filter((item) => {
+    const question = item.question.includes(string);
+    const options = item.options.some((option) => option.text.includes(string));
+    const explanation = item.explanation.includes(string);
+    return question || options || explanation;
+  });
+  console.log(filteredQuestion);
+  const section = document.getElementById("quiz-questions");
   section.innerHTML = "";
-  if (question.length > 0) {
-    question.forEach((item) => {
-      const p = document.createElement("p");
-      p.innerText = item.question;
-      section.appendChild(p);
+  if (filteredQuestion.length > 0) {
+    filteredQuestion.forEach((item) => {
+      displayQuestion(item, true);
     });
   } else {
     const div = document.createElement("div");
