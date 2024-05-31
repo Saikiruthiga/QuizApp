@@ -7,46 +7,120 @@
     <link rel="stylesheet" href="style.css" />
   </head>
   <body>
+    <div id="search">
+      <input
+        id="search-input"
+        type="text"
+        placeholder="Search with text & enter"
+      />
+    </div>
+    <nav>
+      <h1>Test your General Knowledge</h1>
+    </nav>
     <form id="form">
       <div id="question">
-        <label for="question">Enter your question</label>
-        <input id="question-input" type="text" name="question" />
+        <h2>Submit your quiz question here</h2>
+        <hr />
+        <label for="question-input"></label>
+        <input
+          id="question-input"
+          type="text"
+          name="question-input"
+          required
+          placeholder="Enter your question"
+        />
       </div>
       <div id="answers">
         <div class="answer-option">
           <label for="option1"></label>
-          <input id="option1" type="text" name="option1" />
-          <label><input type="radio" name="correct" value="0" />Correct</label
+          <input
+            id="option1"
+            type="text"
+            name="option1"
+            required
+            placeholder="option1"
+          />
+          <label
+            ><input
+              type="radio"
+              name="correct"
+              value="0"
+              required
+            />Correct</label
           ><br />
         </div>
         <div class="answer-option">
           <label for="option2"></label>
-          <input id="option2" type="text" name="option2" />
-          <label><input type="radio" name="correct" value="1" />Correct</label
+          <input
+            id="option2"
+            type="text"
+            name="option2"
+            required
+            placeholder="option2"
+          />
+          <label
+            ><input
+              type="radio"
+              name="correct"
+              value="1"
+              required
+            />Correct</label
           ><br />
         </div>
         <div class="answer-option">
           <label for="option3"></label>
-          <input id="option3" type="text" name="option3" />
-          <label><input type="radio" name="correct" value="2" />Correct</label
+          <input
+            id="option3"
+            type="text"
+            name="option3"
+            required
+            placeholder="option3"
+          />
+          <label
+            ><input
+              type="radio"
+              name="correct"
+              value="2"
+              required
+            />Correct</label
           ><br />
         </div>
         <div class="answer-option">
           <label for="option4"></label>
-          <input id="option4" type="text" name="option4" />
-          <label><input type="radio" name="correct" value="3" />Correct</label
+          <input
+            id="option4"
+            type="text"
+            name="option4"
+            required
+            placeholder="option4"
+          />
+          <label
+            ><input
+              type="radio"
+              name="correct"
+              value="3"
+              required
+            />Correct</label
           ><br />
         </div>
       </div>
       <div>
-        <label for="explanation">Explanation</label>
-        <input id="explanation" type="text" name="explanation" />
+        <label for="explanation"></label>
+        <input
+          id="explanation"
+          type="text"
+          name="explanation"
+          required
+          placeholder="Provide the explanation for the correct answer"
+        />
       </div>
       <div id="buttons">
         <button type="button" id="shuffle">Shuffle</button>
         <button type="submit" id="submit">Submit</button>
       </div>
     </form>
+    <section id="quiz-questions"></section>
+
     <script src="quizapp.js"></script>
   </body>
 </html>
