@@ -1,16 +1,22 @@
 body{
     background-color: azure;
+    margin:0px;
+    font-size: 20px;
 }
 form{
-    width:50%;
+    float: left;
+    width:30%;
     border:1px solid black;
-    margin:0 auto;
-    
+    margin-left: 10px;
 }
 nav{
-    width:50%;
-    margin:0 auto;
+    width:100%;
     text-align: center;
+    background-color: blueviolet;
+    line-height: 50px;
+    color: aliceblue;
+    overflow: hidden;
+     
 }
 #search{
     float: right;
@@ -19,11 +25,75 @@ nav{
     margin-top: 8px;
     margin-right: 15px;
 }
+ #details input{
+margin-bottom: 5px;
+}
+p{
+    font-size: 25px;
+}   
+#details button{
+    border-radius: 15px;
+    background-color: green;
+    color: aliceblue;
+    font-size: 25px;
+    font-weight: bold;
+    padding: 28px 12px;
+    margin-top: -10px;
+    text-align: center;
+    margin-left: 23%;
+}
+#player-details{
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+.player-container{
+    display: flex;
+    align-items: center;
+    width: 100%;
+    justify-content: flex-end;
+}
+.player-container i{
+    font-size: 50px;
+    margin:10px;
+    
+}
+#player-details button{
+    margin-left: 20px;
+    padding: 15px 20px;
+    font-weight: bold;
+    color: aliceblue;
+    background-color: #4D545E;
+    border-radius: 12px;
+    font-size: 30px;
+    display: inline-block;
+   
+}
 
+#player-details p{
+   margin-top: 5%;
+}
+.scorebtn-1,.scorebtn-2{
+    margin:5px;
+    display: inline-block;
+    vertical-align: middle;
+        
+}
+#num-input1,#num-input2{
+    padding: 10px;
+    width:50px;
+    font-size: 25px;
+    font-weight: bold;
+}
+.remove-style{
+    pointer-events: none;
+    opacity: 0.5;
+}
 input{
     line-height:15px;
     padding: 15px 10px;
     border-radius: 8px;
+    font-size: 15px;
 }
 div{
     margin:15px;
@@ -45,15 +115,20 @@ div{
 #buttons{
     text-align: center; 
 }
+#buttons #show{
+    margin-top: 5px;
+}
 #buttons button{
     padding:12px 25px;
     border-radius:12px;
  }
  section button{
     display:block;
+    font-size: 20px;
  }
  section{
-    width:50%;
+    text-align: center;
+    width:30%;
     margin:0 auto;
  }
  section p{
@@ -61,6 +136,8 @@ div{
     background-color: lightblue;
     padding: 15px;
     border-radius: 12px;
+    text-align: left;
+    
  }
  .btnList{
     border: solid 1px #4D545E; 
@@ -82,5 +159,5 @@ div{
     text-align: center;
     background-color: lightblue;
     border-radius: 8px;
-    margin-left: 45%
+    margin-left: 40%
  }
