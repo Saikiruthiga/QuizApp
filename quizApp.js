@@ -19,8 +19,9 @@ function updateForm() {
 let score1 = 0;
 let score2 = 0;
 
-function addScore(playerBtn, score, scoreInput) {
+function addScore(playerBtn, scoreInput) {
   return () => {
+    let score = parseInt(scoreInput.value);
     score += 1;
     playerBtn.innerText = `${playerBtn.innerText.split(":")[0]} : ${score}`;
     scoreInput.value = `${score}`;
@@ -61,6 +62,7 @@ function startQuiz() {
     const numInput1 = document.createElement("input");
     numInput1.type = "number";
     numInput1.id = "num-input1";
+    numInput1.value = 0;
     player1Container.appendChild(numInput1);
 
     const player2Container = document.createElement("div");
@@ -81,23 +83,12 @@ function startQuiz() {
     const numInput2 = document.createElement("input");
     numInput2.type = "number";
     numInput2.id = "num-input2";
+    numInput2.value = 0;
     player2Container.appendChild(numInput2);
-    correctIcon1.addEventListener(
-      "click",
-      addScore(player1Btn, score1, numInput1)
-    );
-    wrongIcon2.addEventListener(
-      "click",
-      addScore(player1Btn, score1, numInput1)
-    );
-    correctIcon2.addEventListener(
-      "click",
-      addScore(player2Btn, score2, numInput2)
-    );
-    wrongIcon1.addEventListener(
-      "click",
-      addScore(player2Btn, score2, numInput2)
-    );
+    correctIcon1.addEventListener("click", addScore(player1Btn, numInput1));
+    wrongIcon2.addEventListener("click", addScore(player1Btn, numInput1));
+    correctIcon2.addEventListener("click", addScore(player2Btn, numInput2));
+    wrongIcon1.addEventListener("click", addScore(player2Btn, numInput2));
   }
 }
 
