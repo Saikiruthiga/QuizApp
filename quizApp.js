@@ -2,14 +2,87 @@ document.addEventListener("DOMContentLoaded", updateForm);
 const form = document.getElementById("form");
 const shuffleBtn = form.querySelector("button[type='button']");
 const searchBtn = document.getElementById("search-input");
+const startBtn = document.getElementById("start");
 const questionArray = [];
 let id = 0;
 let item;
+const audio = new Audio("game_music.mp3");
+audio.preload = "auto";
 
 function updateForm() {
+  startBtn.addEventListener("click", startQuiz);
   form.addEventListener("submit", onClickingSubmit);
   shuffleBtn.addEventListener("click", onClickingShuffle);
   searchBtn.addEventListener("keypress", searchQuestion);
+}
+const scores = [0, 0];
+function addScore(playerBtn, playerIndex, increment) {
+  return () => {
+    scores[playerIndex] += increment;
+    playerBtn.innerText = `${playerBtn.innerText.split(": ")[0]} : ${
+      scores[playerIndex]
+    }`;
+    const numInput = document.getElementById(`num-input-${playerIndex}`);
+    numInput.value = scores[playerIndex];
+    if (scores[playerIndex] >= 10) {
+      audio.play();
+      const icons = document.querySelectorAll("i");
+      icons.forEach((icon) => icon.classList.add("remove-style"));
+    }
+  };
+}
+
+function startQuiz() {
+  const player1 = document.getElementById("player1");
+  const player2 = document.getElementById("player2");
+  let div = document.getElementById("player-details");
+  div.innerHTML = "";
+
+  if (player1.value === "" || player2.value === "") {
+    const p = document.createElement("p");
+    p.innerText = "Please provide the players name";
+    div.appendChild(p);
+  } else {
+    const players = [player1.value, player2.value];
+    const playerButtons = [];
+
+    players.forEach((player, index) => {
+      const playerContainer = document.createElement("div");
+      div.appendChild(playerContainer);
+      playerContainer.className = "player-container";
+
+      const playerBtn = document.createElement("button");
+      playerBtn.innerText = `${player} : 0`;
+      playerBtn.classList.add(`scorebtn-${index}`);
+      playerContainer.appendChild(playerBtn);
+      playerButtons.push(playerBtn);
+
+      const correctIcon = document.createElement("i");
+      correctIcon.className = `fa fa-check-circle scorebtn-${index}`;
+      correctIcon.id = `icon-correct${index}`;
+      playerContainer.appendChild(correctIcon);
+
+      const wrongIcon = document.createElement("i");
+      wrongIcon.className = `fa fa-times-circle scorebtn-${index}`;
+      wrongIcon.id = `icon-wrong${index}`;
+      playerContainer.appendChild(wrongIcon);
+
+      const numInput = document.createElement("input");
+      numInput.type = "number";
+      numInput.id = `num-input-${index}`;
+      numInput.value = 0;
+      playerContainer.appendChild(numInput);
+    });
+    playerButtons.forEach((playerBtn, index) => {
+      const correctIcon = document.getElementById(`icon-correct${index}`);
+      const wrongIcon = document.getElementById(`icon-wrong${index}`);
+      correctIcon.addEventListener("click", addScore(playerBtn, index, 1));
+      wrongIcon.addEventListener(
+        "click",
+        addScore(playerButtons[1 - index], 1 - index, 1)
+      );
+    });
+  }
 }
 
 function onClickingSubmit(event) {
@@ -81,13 +154,15 @@ function onClickingShuffle(event) {
     }
   }
 }
-function displayQuestion(item) {
+function displayQuestion(item, append = false) {
   const section = document.getElementById("quiz-questions");
-  section.innerHTML = "";
+  if (!append) {
+    section.innerHTML = "";
+  }
   const question = document.createElement("div");
   section.appendChild(question);
   const p = document.createElement("p");
-  p.innerText = item.id + " " + item.question;
+  p.innerText = item.question;
   question.appendChild(p);
   item.options.forEach((option) => {
     const optionBtn = document.createElement("button");
@@ -105,6 +180,13 @@ function displayQuestion(item) {
   solutionBtn.innerText = "Solution";
   solutionBtn.dataset.explanation = item.explanation;
   solutionBtn.addEventListener("click", revealSolution);
+  const showbtn = document.querySelector("#show");
+  showbtn.addEventListener("click", showAllQuestions);
+}
+function showAllQuestions() {
+  const section = document.getElementById("quiz-questions");
+  section.innerHTML = "";
+  questionArray.forEach((question) => displayQuestion(question, true));
 }
 
 function revealSolution(event) {
@@ -134,15 +216,15 @@ function checkAnswer(event, question) {
   }
 }
 function searchQuestion(event) {
+  //console.log(questionArray);
   const string = event.target.value.toLowerCase();
-  console.log(string);
   const filteredQuestion = questionArray.filter((item) => {
     const question = item.question.includes(string);
-    const options = item.options.some((option) => option.text.includes(string));
+    const options = item.options.some((item) => item.text.includes(string));
     const explanation = item.explanation.includes(string);
     return question || options || explanation;
   });
-  console.log(filteredQuestion);
+  //console.log(filteredQuestion);
   const section = document.getElementById("quiz-questions");
   section.innerHTML = "";
   if (filteredQuestion.length > 0) {

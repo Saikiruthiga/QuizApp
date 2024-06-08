@@ -5,8 +5,15 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <link rel="stylesheet" href="style.css" />
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css"
+    />
   </head>
   <body>
+    <nav>
+      <h1>Test your General Knowledge</h1>
+    </nav>
     <div id="search">
       <input
         id="search-input"
@@ -14,9 +21,12 @@
         placeholder="Search with text & enter"
       />
     </div>
-    <nav>
-      <h1>Test your General Knowledge</h1>
-    </nav>
+    <div id="details">
+      <input type="text" id="player1" placeholder="Enter 1st player" />
+      <input type="text" id="player2" placeholder="Enter 2nd player" />
+      <button type="button" id="start">Start Quiz</button>
+    </div>
+
     <form id="form">
       <div id="question">
         <h2>Submit your quiz question here</h2>
@@ -116,11 +126,12 @@
       </div>
       <div id="buttons">
         <button type="button" id="shuffle">Shuffle</button>
-        <button type="submit" id="submit">Submit</button>
+        <button type="submit" id="submit">Submit</button><br />
+        <button type="button" id="show">Show all questions</button>
       </div>
     </form>
+    <div id="player-details"></div>
     <section id="quiz-questions"></section>
-
-    <script src="quizapp.js"></script>
+    <script src="quizApp.js"></script>
   </body>
 </html>
