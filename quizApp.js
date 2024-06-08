@@ -15,17 +15,16 @@ function updateForm() {
   shuffleBtn.addEventListener("click", onClickingShuffle);
   searchBtn.addEventListener("keypress", searchQuestion);
 }
-
-let score1 = 0;
-let score2 = 0;
-
-function addScore(playerBtn, scoreInput) {
+const scores = [0, 0];
+function addScore(playerBtn, playerIndex, increment) {
   return () => {
-    let score = parseInt(scoreInput.value);
-    score += 1;
-    playerBtn.innerText = `${playerBtn.innerText.split(":")[0]} : ${score}`;
-    scoreInput.value = `${score}`;
-    if (score >= 10) {
+    scores[playerIndex] += increment;
+    playerBtn.innerText = `${playerBtn.innerText.split(": ")[0]} : ${
+      scores[playerIndex]
+    }`;
+    const numInput = document.getElementById(`num-input-${playerIndex}`);
+    numInput.value = scores[playerIndex];
+    if (scores[playerIndex] >= 10) {
       audio.play();
       const icons = document.querySelectorAll("i");
       icons.forEach((icon) => icon.classList.add("remove-style"));
@@ -44,51 +43,45 @@ function startQuiz() {
     p.innerText = "Please provide the players name";
     div.appendChild(p);
   } else {
-    const player1Container = document.createElement("div");
-    div.appendChild(player1Container);
-    player1Container.className = "player-container";
-    const player1Btn = document.createElement("button");
-    player1Btn.innerText = `${player1.value} : 0`;
-    player1Btn.classList.add("scorebtn-1");
-    player1Container.appendChild(player1Btn);
-    const correctIcon1 = document.createElement("i");
-    correctIcon1.className = `fa fa-check-circle scorebtn-1`;
-    correctIcon1.id = "icon-correct1";
-    player1Container.appendChild(correctIcon1);
-    const wrongIcon1 = document.createElement("i");
-    wrongIcon1.className = "fa fa-times-circle scorebtn-1";
-    wrongIcon1.id = "icon-wrong1";
-    player1Container.appendChild(wrongIcon1);
-    const numInput1 = document.createElement("input");
-    numInput1.type = "number";
-    numInput1.id = "num-input1";
-    numInput1.value = 0;
-    player1Container.appendChild(numInput1);
+    const players = [player1.value, player2.value];
+    const playerButtons = [];
 
-    const player2Container = document.createElement("div");
-    player2Container.className = "player-container";
-    div.appendChild(player2Container);
-    const player2Btn = document.createElement("button");
-    player2Btn.innerText = `${player2.value} : 0`;
-    player2Btn.classList.add("scorebtn-2");
-    player2Container.appendChild(player2Btn);
-    const correctIcon2 = document.createElement("i");
-    correctIcon2.className = "fa fa-check-circle scorebtn-2";
-    correctIcon2.id = "icon-wrong2";
-    player2Container.appendChild(correctIcon2);
-    const wrongIcon2 = document.createElement("i");
-    wrongIcon2.className = "fa fa-times-circle scorebtn-2";
-    wrongIcon2.id = "icon-wrong2";
-    player2Container.appendChild(wrongIcon2);
-    const numInput2 = document.createElement("input");
-    numInput2.type = "number";
-    numInput2.id = "num-input2";
-    numInput2.value = 0;
-    player2Container.appendChild(numInput2);
-    correctIcon1.addEventListener("click", addScore(player1Btn, numInput1));
-    wrongIcon2.addEventListener("click", addScore(player1Btn, numInput1));
-    correctIcon2.addEventListener("click", addScore(player2Btn, numInput2));
-    wrongIcon1.addEventListener("click", addScore(player2Btn, numInput2));
+    players.forEach((player, index) => {
+      const playerContainer = document.createElement("div");
+      div.appendChild(playerContainer);
+      playerContainer.className = "player-container";
+
+      const playerBtn = document.createElement("button");
+      playerBtn.innerText = `${player} : 0`;
+      playerBtn.classList.add(`scorebtn-${index}`);
+      playerContainer.appendChild(playerBtn);
+      playerButtons.push(playerBtn);
+
+      const correctIcon = document.createElement("i");
+      correctIcon.className = `fa fa-check-circle scorebtn-${index}`;
+      correctIcon.id = `icon-correct${index}`;
+      playerContainer.appendChild(correctIcon);
+
+      const wrongIcon = document.createElement("i");
+      wrongIcon.className = `fa fa-times-circle scorebtn-${index}`;
+      wrongIcon.id = `icon-wrong${index}`;
+      playerContainer.appendChild(wrongIcon);
+
+      const numInput = document.createElement("input");
+      numInput.type = "number";
+      numInput.id = `num-input-${index}`;
+      numInput.value = 0;
+      playerContainer.appendChild(numInput);
+    });
+    playerButtons.forEach((playerBtn, index) => {
+      const correctIcon = document.getElementById(`icon-correct${index}`);
+      const wrongIcon = document.getElementById(`icon-wrong${index}`);
+      correctIcon.addEventListener("click", addScore(playerBtn, index, 1));
+      wrongIcon.addEventListener(
+        "click",
+        addScore(playerButtons[1 - index], 1 - index, 1)
+      );
+    });
   }
 }
 
@@ -162,7 +155,7 @@ function onClickingShuffle(event) {
   }
 }
 function displayQuestion(item, append = false) {
-  const section = document.getElementById("quizquestions");
+  const section = document.getElementById("quiz-questions");
   if (!append) {
     section.innerHTML = "";
   }
@@ -191,7 +184,7 @@ function displayQuestion(item, append = false) {
   showbtn.addEventListener("click", showAllQuestions);
 }
 function showAllQuestions() {
-  const section = document.getElementById("quizquestions");
+  const section = document.getElementById("quiz-questions");
   section.innerHTML = "";
   questionArray.forEach((question) => displayQuestion(question, true));
 }
@@ -232,7 +225,7 @@ function searchQuestion(event) {
     return question || options || explanation;
   });
   //console.log(filteredQuestion);
-  const section = document.getElementById("quizquestions");
+  const section = document.getElementById("quiz-questions");
   section.innerHTML = "";
   if (filteredQuestion.length > 0) {
     filteredQuestion.forEach((item) => {
