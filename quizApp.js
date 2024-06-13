@@ -4,8 +4,8 @@ const shuffleBtn = form.querySelector("button[type='button']");
 const searchBtn = document.getElementById("search-input");
 const startBtn = document.getElementById("start");
 const questionArray = [];
-let id = 0;
 let item;
+let id = 0;
 const audio = new Audio("game_music.mp3");
 audio.preload = "auto";
 
@@ -14,7 +14,10 @@ function updateForm() {
   form.addEventListener("submit", onClickingSubmit);
   shuffleBtn.addEventListener("click", onClickingShuffle);
   searchBtn.addEventListener("keypress", searchQuestion);
+  alpha.addEventListener("click", () => doSorting("alpha"));
+  random.addEventListener("click", () => doSorting("random"));
 }
+
 const scores = [0, 0];
 function addScore(playerBtn, playerIndex, increment) {
   return () => {
@@ -73,6 +76,7 @@ function startQuiz() {
       numInput.value = 0;
       playerContainer.appendChild(numInput);
     });
+
     playerButtons.forEach((playerBtn, index) => {
       const correctIcon = document.getElementById(`icon-correct${index}`);
       const wrongIcon = document.getElementById(`icon-wrong${index}`);
@@ -120,14 +124,13 @@ function onClickingSubmit(event) {
       options: optionsOriginal,
       explanation: explanationValue,
     };
-
   questionArray.push(item);
   form.reset();
-  displayQuestion(item);
 }
 
 function onClickingShuffle(event) {
   event.preventDefault();
+
   const answerOptions = document.querySelectorAll(".answer-option");
   const options = Array.from(answerOptions);
   const valuesOriginal = options.map(
@@ -137,6 +140,7 @@ function onClickingShuffle(event) {
   const radios = options.map((option) =>
     option.querySelector("input[type='radio']:checked")
   );
+
   if (values.includes("") || radios.every((radio) => radio === null)) {
     alert("Please fill all the option field and select which one is correct");
     return;
@@ -154,39 +158,81 @@ function onClickingShuffle(event) {
     }
   }
 }
+
 function displayQuestion(item, append = false) {
   const section = document.getElementById("quiz-questions");
   if (!append) {
     section.innerHTML = "";
   }
-  const question = document.createElement("div");
-  section.appendChild(question);
-  const p = document.createElement("p");
-  p.innerText = item.question;
-  question.appendChild(p);
-  item.options.forEach((option) => {
-    const optionBtn = document.createElement("button");
-    optionBtn.classList.add("btnList");
-    optionBtn.innerText = option.text;
-    optionBtn.dataset.correct = option.isCorrect;
-    question.appendChild(optionBtn);
-    optionBtn.addEventListener("click", (event) =>
-      checkAnswer(event, question)
-    );
+
+  item.forEach((ques) => {
+    const question = document.createElement("div");
+    section.appendChild(question);
+
+    const p = document.createElement("p");
+    p.className = "question";
+    p.innerText = ques.question;
+    question.appendChild(p);
+
+    ques.options.forEach((option) => {
+      const optionBtn = document.createElement("button");
+      optionBtn.classList.add("btnList");
+      optionBtn.innerText = option.text;
+      optionBtn.dataset.correct = option.isCorrect;
+      question.appendChild(optionBtn);
+      optionBtn.addEventListener("click", (event) =>
+        checkAnswer(event, question)
+      );
+    });
+
+    const solutionBtn = document.createElement("button");
+    question.appendChild(solutionBtn);
+    solutionBtn.classList.add("solution-button");
+    solutionBtn.innerText = "Solution";
+    solutionBtn.dataset.explanation = ques.explanation;
+    solutionBtn.addEventListener("click", revealSolution);
   });
-  const solutionBtn = document.createElement("button");
-  question.appendChild(solutionBtn);
-  solutionBtn.classList.add("solutionbtn");
-  solutionBtn.innerText = "Solution";
-  solutionBtn.dataset.explanation = item.explanation;
-  solutionBtn.addEventListener("click", revealSolution);
-  const showbtn = document.querySelector("#show");
-  showbtn.addEventListener("click", showAllQuestions);
 }
+
+const alpha = document.getElementById("alpha");
+const random = document.getElementById("random");
+
+function doSorting(type) {
+  const section = document.getElementById("quiz-questions");
+  const questions = Array.from(section.getElementsByClassName("question"));
+  if (questions.length === 0) {
+    section.innerText = `Please click on "show all questions" button to display the questions and then select sorting type`;
+    return;
+  }
+  let sortedQuestions;
+  if (type === "alpha") {
+    sortedQuestions = questions.sort((a, b) =>
+      a.innerText.localeCompare(b.innerText)
+    );
+  }
+  if (type === "random") {
+    sortedQuestions = questions.sort(() => Math.random() - 0.5);
+  }
+  section.innerHTML = "";
+  sortedQuestions.forEach((question) =>
+    section.appendChild(question.parentElement)
+  );
+}
+
+const showbtn = document.querySelector("#show");
+showbtn.addEventListener("click", showAllQuestions);
+
 function showAllQuestions() {
   const section = document.getElementById("quiz-questions");
   section.innerHTML = "";
-  questionArray.forEach((question) => displayQuestion(question, true));
+  fetch(
+    "https://raw.githubusercontent.com/Saikiruthiga/Saikiruthiga.github.io/main/sample/quiz.json"
+  )
+    .then((res) => res.json())
+    .then((question) => displayQuestion(question, true))
+    .catch((error) => console.log(error))
+    .finally(() => console.log("done"));
+  displayQuestion(questionArray, true);
 }
 
 function revealSolution(event) {
@@ -203,7 +249,8 @@ function revealSolution(event) {
 function checkAnswer(event, question) {
   const btnSelected = event.target;
   const isCorrect = btnSelected.dataset.correct === "true";
-  const buttons = question.querySelectorAll("button");
+  const buttons = question.querySelectorAll(".btnList");
+
   buttons.forEach((button) => {
     if (button !== btnSelected) {
       button.disabled = true;
@@ -215,25 +262,57 @@ function checkAnswer(event, question) {
     btnSelected.classList.add("in-correct");
   }
 }
-function searchQuestion(event) {
-  //console.log(questionArray);
+
+fetch(
+  "https://raw.githubusercontent.com/Saikiruthiga/Saikiruthiga.github.io/main/sample/quiz.json"
+)
+  .then((res) => res.json())
+  .then((data) => {
+    const search = document.getElementById("search-input");
+    search.addEventListener("keypress", (event) => searchQuestion(event, data));
+  })
+  .catch((error) => console.log(error))
+  .finally(() => console.log("done"));
+
+function searchQuestion(event, data) {
   const string = event.target.value.toLowerCase();
-  const filteredQuestion = questionArray.filter((item) => {
-    const question = item.question.includes(string);
-    const options = item.options.some((item) => item.text.includes(string));
-    const explanation = item.explanation.includes(string);
-    return question || options || explanation;
-  });
-  //console.log(filteredQuestion);
   const section = document.getElementById("quiz-questions");
   section.innerHTML = "";
+
+  const filteredQuestion = (data || []).filter((item) => {
+    const question = item.question.toLowerCase().includes(string);
+    const options = item.options.some((item) =>
+      item.text.toLowerCase().includes(string)
+    );
+    const explanation = item.explanation.toLowerCase().includes(string);
+    return question || options || explanation;
+  });
+
+  const filteredQuestion1 = questionArray.filter((item) => {
+    const question = item.question.toLowerCase().includes(string);
+    const options = item.options.some((item) =>
+      item.text.toLowerCase().includes(string)
+    );
+    const explanation = item.explanation.toLowerCase().includes(string);
+    return question || options || explanation;
+  });
+
   if (filteredQuestion.length > 0) {
     filteredQuestion.forEach((item) => {
-      displayQuestion(item, true);
+      displayQuestion(Array(item), true);
     });
-  } else {
+    return;
+  }
+  if (filteredQuestion1.length > 0) {
+    filteredQuestion1.forEach((item) => {
+      displayQuestion(Array(item), true);
+    });
+    return;
+  }
+  {
     const div = document.createElement("div");
     div.innerText = `There is no question available with the text - "${string}"`;
     section.appendChild(div);
+    return;
   }
 }
