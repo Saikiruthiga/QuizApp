@@ -76,6 +76,7 @@ function startQuiz() {
       numInput.value = 0;
       playerContainer.appendChild(numInput);
     });
+
     playerButtons.forEach((playerBtn, index) => {
       const correctIcon = document.getElementById(`icon-correct${index}`);
       const wrongIcon = document.getElementById(`icon-wrong${index}`);
@@ -129,6 +130,7 @@ function onClickingSubmit(event) {
 
 function onClickingShuffle(event) {
   event.preventDefault();
+
   const answerOptions = document.querySelectorAll(".answer-option");
   const options = Array.from(answerOptions);
   const valuesOriginal = options.map(
@@ -138,6 +140,7 @@ function onClickingShuffle(event) {
   const radios = options.map((option) =>
     option.querySelector("input[type='radio']:checked")
   );
+
   if (values.includes("") || radios.every((radio) => radio === null)) {
     alert("Please fill all the option field and select which one is correct");
     return;
@@ -155,17 +158,19 @@ function onClickingShuffle(event) {
     }
   }
 }
+
 function displayQuestion(item, append = false) {
   const section = document.getElementById("quiz-questions");
   if (!append) {
     section.innerHTML = "";
   }
+
   item.forEach((ques) => {
     const question = document.createElement("div");
     section.appendChild(question);
 
     const p = document.createElement("p");
-    p.className = "ques";
+    p.className = "question";
     p.innerText = ques.question;
     question.appendChild(p);
 
@@ -179,20 +184,22 @@ function displayQuestion(item, append = false) {
         checkAnswer(event, question)
       );
     });
+
     const solutionBtn = document.createElement("button");
     question.appendChild(solutionBtn);
-    solutionBtn.classList.add("solutionbtn");
+    solutionBtn.classList.add("solution-button");
     solutionBtn.innerText = "Solution";
     solutionBtn.dataset.explanation = ques.explanation;
     solutionBtn.addEventListener("click", revealSolution);
   });
 }
+
 const alpha = document.getElementById("alpha");
 const random = document.getElementById("random");
 
 function doSorting(type) {
   const section = document.getElementById("quiz-questions");
-  const questions = Array.from(section.getElementsByClassName("ques"));
+  const questions = Array.from(section.getElementsByClassName("question"));
   if (questions.length === 0) {
     section.innerText = `Please click on "show all questions" button to display the questions and then select sorting type`;
     return;
@@ -214,6 +221,7 @@ function doSorting(type) {
 
 const showbtn = document.querySelector("#show");
 showbtn.addEventListener("click", showAllQuestions);
+
 function showAllQuestions() {
   const section = document.getElementById("quiz-questions");
   section.innerHTML = "";
@@ -270,6 +278,7 @@ function searchQuestion(event, data) {
   const string = event.target.value.toLowerCase();
   const section = document.getElementById("quiz-questions");
   section.innerHTML = "";
+
   const filteredQuestion = (data || []).filter((item) => {
     const question = item.question.toLowerCase().includes(string);
     const options = item.options.some((item) =>
@@ -278,6 +287,7 @@ function searchQuestion(event, data) {
     const explanation = item.explanation.toLowerCase().includes(string);
     return question || options || explanation;
   });
+
   const filteredQuestion1 = questionArray.filter((item) => {
     const question = item.question.toLowerCase().includes(string);
     const options = item.options.some((item) =>
@@ -286,6 +296,7 @@ function searchQuestion(event, data) {
     const explanation = item.explanation.toLowerCase().includes(string);
     return question || options || explanation;
   });
+
   if (filteredQuestion.length > 0) {
     filteredQuestion.forEach((item) => {
       displayQuestion(Array(item), true);
