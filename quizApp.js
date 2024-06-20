@@ -7,7 +7,6 @@ const questionArray = [];
 let item;
 let id = 0;
 const audio = new Audio("game_music.mp3");
-audio.preload = "auto";
 
 function updateForm() {
   startBtn.addEventListener("click", startQuiz);
@@ -19,9 +18,9 @@ function updateForm() {
 }
 
 const scores = [0, 0];
-function addScore(playerBtn, playerIndex, increment) {
+function addScore(playerBtn, playerIndex) {
   return () => {
-    scores[playerIndex] += increment;
+    scores[playerIndex] += 1;
     playerBtn.innerText = `${playerBtn.innerText.split(": ")[0]} : ${
       scores[playerIndex]
     }`;
@@ -56,17 +55,16 @@ function startQuiz() {
 
       const playerBtn = document.createElement("button");
       playerBtn.innerText = `${player} : 0`;
-      playerBtn.classList.add(`scorebtn-${index}`);
       playerContainer.appendChild(playerBtn);
       playerButtons.push(playerBtn);
 
       const correctIcon = document.createElement("i");
-      correctIcon.className = `fa fa-check-circle scorebtn-${index}`;
+      correctIcon.className = `fa fa-check-circle`;
       correctIcon.id = `icon-correct${index}`;
       playerContainer.appendChild(correctIcon);
 
       const wrongIcon = document.createElement("i");
-      wrongIcon.className = `fa fa-times-circle scorebtn-${index}`;
+      wrongIcon.className = `fa fa-times-circle`;
       wrongIcon.id = `icon-wrong${index}`;
       playerContainer.appendChild(wrongIcon);
 
@@ -80,10 +78,10 @@ function startQuiz() {
     playerButtons.forEach((playerBtn, index) => {
       const correctIcon = document.getElementById(`icon-correct${index}`);
       const wrongIcon = document.getElementById(`icon-wrong${index}`);
-      correctIcon.addEventListener("click", addScore(playerBtn, index, 1));
+      correctIcon.addEventListener("click", addScore(playerBtn, index));
       wrongIcon.addEventListener(
         "click",
-        addScore(playerButtons[1 - index], 1 - index, 1)
+        addScore(playerButtons[1 - index], 1 - index)
       );
     });
   }
@@ -99,6 +97,7 @@ function onClickingSubmit(event) {
   const radios = document.querySelectorAll(
     ".answer-option input[type = 'radio']"
   );
+
   if (question.length > 140) {
     alert("your quention length should not exceed 140 characters");
     return;
@@ -222,17 +221,49 @@ function doSorting(type) {
 const showbtn = document.querySelector("#show");
 showbtn.addEventListener("click", showAllQuestions);
 
-function showAllQuestions() {
-  const section = document.getElementById("quiz-questions");
-  section.innerHTML = "";
-  fetch(
-    "https://raw.githubusercontent.com/Saikiruthiga/Saikiruthiga.github.io/main/sample/quiz.json"
-  )
-    .then((res) => res.json())
-    .then((question) => displayQuestion(question, true))
-    .catch((error) => console.log(error))
-    .finally(() => console.log("done"));
+async function showAllQuestions() {
+  try {
+    const section = document.getElementById("quiz-questions");
+    section.innerHTML = "";
+    const res = await fetch(
+      "https://raw.githubusercontent.com/Saikiruthiga/Saikiruthiga.github.io/main/sample/quiz.json"
+    );
+    const data = await res.json();
+    displayQuestion(data, true);
+
+    const submitQuizBtn = document.getElementById("submit-quiz");
+    submitQuizBtn.removeAttribute("hidden");
+    submitQuizBtn.addEventListener("click", calcScore);
+  } catch (error) {
+    console.log(error);
+  }
+
   displayQuestion(questionArray, true);
+}
+function calcScore() {
+  let score = 0;
+  const questions = document.querySelectorAll("#quiz-questions > div");
+  questions.forEach((question) => {
+    const options = question.querySelectorAll(".btnList");
+    options.forEach((option) => {
+      if (
+        option.classList.contains("correct") &&
+        option.dataset.correct === "true"
+      ) {
+        score += 1;
+      }
+    });
+  });
+
+  const submitQuizBtn = document.getElementById("submit-quiz");
+  submitQuizBtn.setAttribute("hidden", true);
+
+  const div = document.getElementById("quiz-questions");
+  div.innerHTML = "";
+  const p = document.createElement("P");
+  p.innerText = `Your score is ${score} out of ${questions.length}`;
+  p.id = "score";
+  div.appendChild(p);
 }
 
 function revealSolution(event) {
@@ -263,16 +294,18 @@ function checkAnswer(event, question) {
   }
 }
 
-fetch(
-  "https://raw.githubusercontent.com/Saikiruthiga/Saikiruthiga.github.io/main/sample/quiz.json"
-)
-  .then((res) => res.json())
-  .then((data) => {
+async function fetchUsingAsync() {
+  try {
+    const res = await fetch(
+      "https://raw.githubusercontent.com/Saikiruthiga/Saikiruthiga.github.io/main/sample/quiz.json"
+    );
+    const data = await res.json();
     const search = document.getElementById("search-input");
     search.addEventListener("keypress", (event) => searchQuestion(event, data));
-  })
-  .catch((error) => console.log(error))
-  .finally(() => console.log("done"));
+  } catch (error) {
+    console.log(error);
+  }
+}
 
 function searchQuestion(event, data) {
   const string = event.target.value.toLowerCase();
@@ -310,9 +343,14 @@ function searchQuestion(event, data) {
     return;
   }
   {
+    const submitQuizBtn = document.getElementById("submit-quiz");
+    submitQuizBtn.setAttribute("hidden", true);
+
     const div = document.createElement("div");
+    div.id = "noQuestion";
     div.innerText = `There is no question available with the text - "${string}"`;
     section.appendChild(div);
     return;
   }
 }
+fetchUsingAsync();
