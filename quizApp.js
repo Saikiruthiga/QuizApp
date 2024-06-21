@@ -59,12 +59,12 @@ function startQuiz() {
       playerButtons.push(playerBtn);
 
       const correctIcon = document.createElement("i");
-      correctIcon.className = `fa fa-check-circle`;
+      correctIcon.className = "fa fa-check-circle";
       correctIcon.id = `icon-correct${index}`;
       playerContainer.appendChild(correctIcon);
 
       const wrongIcon = document.createElement("i");
-      wrongIcon.className = `fa fa-times-circle`;
+      wrongIcon.className = "fa fa-times-circle";
       wrongIcon.id = `icon-wrong${index}`;
       playerContainer.appendChild(wrongIcon);
 
@@ -237,9 +237,9 @@ async function showAllQuestions() {
   } catch (error) {
     console.log(error);
   }
-
   displayQuestion(questionArray, true);
 }
+
 function calcScore() {
   let score = 0;
   const questions = document.querySelectorAll("#quiz-questions > div");
