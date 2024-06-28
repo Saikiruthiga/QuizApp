@@ -3,8 +3,8 @@ const form = document.getElementById("form");
 const shuffleBtn = form.querySelector("button[type='button']");
 const searchBtn = document.getElementById("search-input");
 const startBtn = document.getElementById("start");
-const questionArray = [];
 let item;
+let storedQuestions = [];
 let id = 0;
 const audio = new Audio("game_music.mp3");
 
@@ -113,7 +113,7 @@ function onClickingSubmit(event) {
     alert("please give unique values");
     return;
   }
-  if (questionArray.some((item) => item.question === question)) {
+  if (storedQuestions.some((item) => item.question === question)) {
     alert("This question already available in our list");
     return;
   } else
@@ -123,7 +123,12 @@ function onClickingSubmit(event) {
       options: optionsOriginal,
       explanation: explanationValue,
     };
-  questionArray.push(item);
+  storedQuestions = JSON.parse(
+    localStorage.getItem("question") || JSON.stringify([])
+  );
+  storedQuestions.push(item);
+  localStorage.setItem("question", JSON.stringify(storedQuestions));
+  alert("Question submitted successfully");
   form.reset();
 }
 
@@ -163,34 +168,36 @@ function displayQuestion(item, append = false) {
   if (!append) {
     section.innerHTML = "";
   }
+  (item || [])
+    .sort(() => Math.random() - 0.5)
+    .slice(0, 10)
+    .forEach((ques) => {
+      const question = document.createElement("div");
+      section.appendChild(question);
 
-  item.forEach((ques) => {
-    const question = document.createElement("div");
-    section.appendChild(question);
+      const p = document.createElement("p");
+      p.className = "question";
+      p.innerText = ques.question;
+      question.appendChild(p);
 
-    const p = document.createElement("p");
-    p.className = "question";
-    p.innerText = ques.question;
-    question.appendChild(p);
+      ques.options.forEach((option) => {
+        const optionBtn = document.createElement("button");
+        optionBtn.classList.add("btnList");
+        optionBtn.innerText = option.text;
+        optionBtn.dataset.correct = option.isCorrect;
+        question.appendChild(optionBtn);
+        optionBtn.addEventListener("click", (event) =>
+          checkAnswer(event, question)
+        );
+      });
 
-    ques.options.forEach((option) => {
-      const optionBtn = document.createElement("button");
-      optionBtn.classList.add("btnList");
-      optionBtn.innerText = option.text;
-      optionBtn.dataset.correct = option.isCorrect;
-      question.appendChild(optionBtn);
-      optionBtn.addEventListener("click", (event) =>
-        checkAnswer(event, question)
-      );
+      const solutionBtn = document.createElement("button");
+      question.appendChild(solutionBtn);
+      solutionBtn.classList.add("solution-button");
+      solutionBtn.innerText = "Solution";
+      solutionBtn.dataset.explanation = ques.explanation;
+      solutionBtn.addEventListener("click", revealSolution);
     });
-
-    const solutionBtn = document.createElement("button");
-    question.appendChild(solutionBtn);
-    solutionBtn.classList.add("solution-button");
-    solutionBtn.innerText = "Solution";
-    solutionBtn.dataset.explanation = ques.explanation;
-    solutionBtn.addEventListener("click", revealSolution);
-  });
 }
 
 const alpha = document.getElementById("alpha");
@@ -237,7 +244,9 @@ async function showAllQuestions() {
   } catch (error) {
     console.log(error);
   }
-  displayQuestion(questionArray, true);
+
+  const storedQuestions = JSON.parse(localStorage.getItem("question"));
+  displayQuestion(storedQuestions, true);
 }
 
 function calcScore() {
@@ -310,6 +319,7 @@ async function fetchUsingAsync() {
 function searchQuestion(event, data) {
   const string = event.target.value.toLowerCase();
   const section = document.getElementById("quiz-questions");
+  storedQuestions = JSON.parse(localStorage.getItem("question"));
   section.innerHTML = "";
 
   const filteredQuestion = (data || []).filter((item) => {
@@ -321,7 +331,7 @@ function searchQuestion(event, data) {
     return question || options || explanation;
   });
 
-  const filteredQuestion1 = questionArray.filter((item) => {
+  const filteredQuestion1 = storedQuestions.filter((item) => {
     const question = item.question.toLowerCase().includes(string);
     const options = item.options.some((item) =>
       item.text.toLowerCase().includes(string)
@@ -342,15 +352,15 @@ function searchQuestion(event, data) {
     });
     return;
   }
-  {
-    const submitQuizBtn = document.getElementById("submit-quiz");
-    submitQuizBtn.setAttribute("hidden", true);
 
-    const div = document.createElement("div");
-    div.id = "noQuestion";
-    div.innerText = `There is no question available with the text - "${string}"`;
-    section.appendChild(div);
-    return;
-  }
+  const submitQuizBtn = document.getElementById("submit-quiz");
+  submitQuizBtn.setAttribute("hidden", true);
+
+  const div = document.createElement("div");
+  div.id = "noQuestion";
+  div.innerText = `There is no question available with the text - "${string}"`;
+  section.appendChild(div);
+  return;
 }
+
 fetchUsingAsync();
