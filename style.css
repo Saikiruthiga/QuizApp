@@ -76,10 +76,11 @@ p{
     margin-bottom: 10px;
     text-align: center;
     margin-left: 46%;
+   
 
 }
 #sort{
-    margin-left: 70%;
+    margin-left: 75%;
     margin-top: -75px;
     }
 .drop-btn{
@@ -210,4 +211,92 @@ div{
  }
  #noQuestion{
     margin-top: 25%;
+ }
+
+ @media only screen and (max-width:900px) {
+    #start{
+        border-radius: 15px;
+        background-color: green;
+        color: aliceblue;
+        font-size: 20px;
+        font-weight: bold;
+        padding: 15px 8px;
+        margin-top: -1px;
+        text-align: center;
+        margin-left: 3%;
+    }
+    #submit-quiz{
+        border-radius: 15px;
+        background-color: green;
+        color: aliceblue;
+        font-size: 20px;
+        font-weight: bold;
+        padding: 15px 8px;
+        margin-top: 10px;
+        margin-bottom: 10px;
+        text-align: center;
+        margin-left: 43%;
+       
+    
+    }
+    .drop-btn{
+        padding: 15px 30px;
+        border-radius: 8px;
+        line-height: 5px;
+        font-size: 15px;
+        margin-right: -4%;
+        
+    }
+    .solution-button{
+        padding: 12px 20px;
+        text-align: center;
+        background-color: lightblue;
+        border-radius: 8px;
+        margin-left: 38%
+     }
+     input{
+        line-height:12px;
+        padding: 12px 10px;
+        border-radius: 8px;
+        font-size: 12px;
+    }
+    #search{
+        float: right;
+        padding: 10px;
+        border:none;
+        margin-top: 8px;
+        margin-right: 40px;
+    }
+    #sort{
+        margin-left: 73%;
+        margin-top: -75px;
+        }
+    section{
+       width:50%;
+       
+    }
+    section p{
+        border: solid 1px #4D545E; 
+        background-color: lightblue;
+        padding: 10px;
+        border-radius: 12px;
+        text-align: left;
+        margin-left: 50px;
+        font-size: 20px;
+        
+     }
+     .btnList{
+        border: solid 1px #4D545E; 
+        background-color: lightblue;
+        width:85%;
+        padding: 10px;
+        border-radius: 12px;
+        text-align: left;
+        margin-left:50px;
+       }
+       section button{
+        display:block;
+        font-size: 15px;
+     }
+
  }
